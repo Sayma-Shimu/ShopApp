@@ -1,5 +1,7 @@
 import { getItems } from "@/services/itemes.itemes";
 import { ShopCard } from "./_componet/ShopCard";
+import { Suspense } from "react";
+import { SkeletonLoader } from "@/components/Loader";
 
 export default async function ItemsPage({ searchParams }) {
   const getParams = await searchParams;
@@ -82,46 +84,9 @@ export default async function ItemsPage({ searchParams }) {
 
       {/* Products Grid Section */}
       <section className="container mx-auto px-4 py-16">
-        {items.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-2xl shadow-lg">
-            <div className="text-6xl mb-4">📦</div>
-            <h3 className="text-2xl font-bold text-gray-800 mb-2">No Products Available</h3>
-            <p className="text-lg text-gray-600 mb-6">
-              Visit /api/seed to add sample products!
-            </p>
-            <button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-full font-semibold hover:shadow-xl transform hover:scale-105 transition-all duration-300">
-              Add Products
-            </button>
-          </div>
-        ) : (
-          <>
-            {/* Products Header */}
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold text-gray-900 mb-4">Featured Products</h2>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                Discover our carefully curated collection of premium products at unbeatable prices
-              </p>
-              <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto mt-6 rounded-full"></div>
-            </div>
-
-            {/* Products Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-              {items.map((item) => (
-                <ShopCard key={item._id} item={item}/>
-              ))}
-            </div>
-
-            {/* Load More Section */}
-            <div className="text-center mt-16">
-              <button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-full font-semibold hover:shadow-xl transform hover:scale-105 transition-all duration-300 inline-flex items-center gap-2">
-                <span>Load More Products</span>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-            </div>
-          </>
-        )}
+        <Suspense fallback={<SkeletonLoader count={8} />}>
+          <ProductsGrid items={items} />
+        </Suspense>
       </section>
 
       {/* Features Section */}
@@ -154,5 +119,53 @@ export default async function ItemsPage({ searchParams }) {
         </div>
       </section>
     </div>
+  );
+}
+
+// Separate component for products grid
+function ProductsGrid({ items }) {
+  if (items.length === 0) {
+    return (
+      <div className="text-center py-20 bg-white rounded-2xl shadow-lg">
+        <div className="text-6xl mb-4">📦</div>
+        <h3 className="text-2xl font-bold text-gray-800 mb-2">No Products Available</h3>
+        <p className="text-lg text-gray-600 mb-6">
+          Visit /api/seed to add sample products!
+        </p>
+        <button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-full font-semibold hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+          Add Products
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      {/* Products Header */}
+      <div className="text-center mb-12">
+        <h2 className="text-4xl font-bold text-gray-900 mb-4">Featured Products</h2>
+        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          Discover our carefully curated collection of premium products at unbeatable prices
+        </p>
+        <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto mt-6 rounded-full"></div>
+      </div>
+
+      {/* Products Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        {items.map((item) => (
+          <ShopCard key={item._id} item={item}/>
+        ))}
+      </div>
+
+      {/* Load More Section */}
+      <div className="text-center mt-16">
+        <button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-full font-semibold hover:shadow-xl transform hover:scale-105 transition-all duration-300 inline-flex items-center gap-2">
+          <span>Load More Products</span>
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+      </div>
+    </>
   );
 }
