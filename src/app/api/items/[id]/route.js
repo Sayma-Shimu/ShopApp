@@ -6,7 +6,7 @@ import { dbConnect } from '@/lib/dbConnect';
 export async function GET(request, { params }) {
   try {
     const db = await dbConnect();
-    const { id } = await params;
+    const { id } = params;
     
     const item = await db.collection('items').findOne({
       _id: new ObjectId(id)

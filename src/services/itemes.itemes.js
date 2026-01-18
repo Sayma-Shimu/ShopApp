@@ -5,7 +5,7 @@ export const getItems = async (params = {}) => {
     const queryString = new URLSearchParams(params).toString();
     // Use relative URL for server-side requests
     const baseUrl = typeof window === 'undefined' 
-      ? process.env.NEXTAUTH_URL || 'http://localhost:3002'
+      ? process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
       : '';
     const url = `${baseUrl}/api/items${queryString ? `?${queryString}` : ''}`;
     
@@ -31,7 +31,7 @@ export const getSingleItem = async (id) => {
   try {
     // Use relative URL for server-side requests
     const baseUrl = typeof window === 'undefined' 
-      ? process.env.NEXTAUTH_URL || 'http://localhost:3002'
+      ? process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
       : '';
     const res = await fetch(`${baseUrl}/api/items/${id}`, {
       next: {
